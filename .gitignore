@@ -1,0 +1,7 @@
+build/
+*.o
+*.dSYM/
+config.json
+.DS_Store
+*.png
+!docs/*.png
