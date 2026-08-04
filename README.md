@@ -59,6 +59,45 @@ existing `statusLine` unless you pass `--force`), builds the menu bar app into
 ./uninstall.sh --all          # also remove the status line
 ```
 
+## Running and stopping it
+
+Quitting from the dropdown stops it until your next login. To get it back, or to control
+it without logging out:
+
+```sh
+make start      # start it again (also restarts it if it's already running)
+make stop       # stop it until the next login
+make status     # running or not, and its pid
+```
+
+Or with `launchctl` directly, if you'd rather not be in the repo:
+
+```sh
+L=com.claude-code.usage-menubar
+launchctl kickstart -k gui/$(id -u)/$L        # start / restart
+launchctl bootout   gui/$(id -u)/$L          # stop until next login
+launchctl print     gui/$(id -u)/$L          # inspect
+```
+
+To keep it from starting at login at all — `launchctl disable` persists across reboots,
+unlike `bootout`:
+
+```sh
+launchctl disable gui/$(id -u)/com.claude-code.usage-menubar   # and `enable` to undo
+```
+
+To run **this checkout** instead of the installed copy, e.g. while changing the drawing:
+
+```sh
+make stop       # so you don't get two items in the menu bar
+make run        # foreground; Ctrl-C to stop
+make start      # back to the installed copy
+```
+
+The LaunchAgent uses `KeepAlive: {SuccessfulExit: false}` — it restarts the app if it
+crashes, but a clean quit is left alone. (With a plain `KeepAlive: true`, launchd relaunches
+it about a second after you quit, which makes the Quit item look broken.)
+
 ## How it works
 
 Claude Code runs a `statusLine` command on every render, piping it a JSON blob about

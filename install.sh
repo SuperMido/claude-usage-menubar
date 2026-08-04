@@ -107,8 +107,13 @@ if [ "$DO_MENUBAR" = 1 ]; then
     </array>
     <key>RunAtLoad</key>
     <true/>
+    <!-- Restart if it crashes, but let "Quit" in the dropdown actually stick:
+         a clean exit 0 is not relaunched. -->
     <key>KeepAlive</key>
-    <true/>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
     <key>ProcessType</key>
     <string>Interactive</string>
     <key>StandardOutPath</key>
